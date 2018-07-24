@@ -60,14 +60,37 @@ class agendaController extends AppBaseController
         $hora = substr($input['hora'],1,2);
         
         if ($hora > = '09' and $hora < = '18'){
-            $agenda = $this->agendaRepository->create($input);
-
-            Flash::success('Agenda saved successfully.');
+            $existe = $this->agendaRepository->existe_hora($input['hora'], $input['fecha']);
+            
+            if ($existe){
+                $agenda = $this->agendaRepository->create($input);
+                Flash::success('Agenda saved successfully.');
+            }else{
+                Flash::error('Agenda Tomada en ese Horario.');
+            }
+        }else{
+            Flash::error('Se deben tomar horas en horario de oficina, de 9 a 18hrs');
         }
 
         return redirect(route('agendas.index'));
     }
 
+     /**
+     * Display the specified agenda by hours and date.
+     *
+     * @param  int $id
+     *
+     * @return Response
+     */
+    public function existe_hora($hora, $fecha)
+    {
+        $agenda = $this->agendaRepository->findWithoutFail($hora, $fecha);
+        if (empty($agenda)) {
+            return true;
+        }
+        return false;
+    }
+    
     /**
      * Display the specified agenda.
      *
