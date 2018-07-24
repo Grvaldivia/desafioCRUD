@@ -56,10 +56,14 @@ class agendaController extends AppBaseController
     public function store(CreateagendaRequest $request)
     {
         $input = $request->all();
+        
+        $hora = substr($input['hora'],1,2);
+        
+        if ($hora > = '09' and $hora < = '18'){
+            $agenda = $this->agendaRepository->create($input);
 
-        $agenda = $this->agendaRepository->create($input);
-
-        Flash::success('Agenda saved successfully.');
+            Flash::success('Agenda saved successfully.');
+        }
 
         return redirect(route('agendas.index'));
     }
